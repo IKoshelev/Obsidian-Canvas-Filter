@@ -10,7 +10,7 @@ When you have a canvas like this:
 
 ![image](./assets/All-visible.png)
 
-Select the nodes, whose color you are interested in:
+Select one or more nodes, whose color you are interested in:
 
 ![image](./assets/Select-color.png)
 
