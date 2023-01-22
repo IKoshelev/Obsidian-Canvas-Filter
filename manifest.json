@@ -3,7 +3,7 @@
 	"name": "Canvas Filter Plugin",
 	"version": "0.9.0",
 	"minAppVersion": "1.1.9",
-	"description": "This plugin lets you filter Canvas to only show items of specific color or only connected to currently selected",
+	"description": "This plugin lets you filter Canvas to only show items of specific color, tags or only connected to currently selected",
 	"author": "Ivan Koshelev",
 	"authorUrl": "https://ikoshelev.azurewebsites.net/",
 	"fundingUrl": "https://github.com/IKoshelev/Obsidian-Canvas-Filter",
