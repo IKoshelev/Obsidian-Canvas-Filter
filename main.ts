@@ -1,14 +1,13 @@
 import { CanvasData, CanvasNodeData } from 'canvas';
 import { App, Editor, ItemView, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
-// Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
-	mySetting: string;
+interface CanvasFilterPluginSettings {
+	// mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+const DEFAULT_SETTINGS: CanvasFilterPluginSettings = {
+	// mySetting: 'default'
 }
 
 export function nodeBondingBoxContains(outerNode: CanvasNodeData, innerNode: CanvasNodeData) {
@@ -44,9 +43,9 @@ export function showOnlyEdges(canvas: any, idsToShow?: Set<string>) {
 	}
 }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
-	private currentView: ItemView;
+export default class CanvasFilterPlugin extends Plugin {
+
+	settings: CanvasFilterPluginSettings;
 
 	async onload() {
 
@@ -112,8 +111,6 @@ export default class MyPlugin extends Plugin {
 				if (!canvasData) {
 					return;
 				};
-
-				this.currentView = canvasView;
 
 				const selection: any = Array.from(canvas.selection);
 				if (selection.length === 0) {
