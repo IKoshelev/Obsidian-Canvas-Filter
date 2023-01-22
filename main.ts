@@ -47,70 +47,51 @@ export default class CanvasFilterPlugin extends Plugin {
 
 	settings: CanvasFilterPluginSettings;
 
+	private ifActiveViewIsCanvas = (commandFn: (canvas: any, canvasData: CanvasData) => void) => (checking: boolean) => {
+		const canvasView = this.app.workspace.getActiveViewOfType(ItemView);
+
+		if (canvasView?.getViewType() !== 'canvas') {
+			if (checking) {
+				return false;
+			}
+			return;
+		}
+
+		if (checking) {
+			return true;
+		}
+
+		const canvas = (canvasView as any).canvas;
+		if (!canvas) {
+			return;
+		};
+
+		const canvasData = canvas.getData() as CanvasData;
+
+		if (!canvasData) {
+			return;
+		};
+
+		return commandFn(canvas, canvasData);
+	}
+
 	async onload() {
 
 		this.addCommand({
 			id: 'show-all',
 			name: 'Show all nodes and groups',
-			checkCallback: (checking: boolean) => {
-				const canvasView = this.app.workspace.getActiveViewOfType(ItemView);
-
-				if (canvasView?.getViewType() !== 'canvas') {
-					if (checking) {
-						return false;
-					}
-					return;
-				}
-
-				if (checking) {
-					return true;
-				}
-
-				const canvas = (canvasView as any).canvas;
-				if (!canvas) {
-					return;
-				};
-
-				const canvasData = canvas.getData() as CanvasData;
-
-				if (!canvasData) {
-					return;
-				};
+			checkCallback: this.ifActiveViewIsCanvas((canvas, canvasData) => {
 
 				showOnlyNodes(canvas);
 
 				showOnlyEdges(canvas);
-			}
+			})
 		});
-
 
 		this.addCommand({
 			id: 'show-only-same-color',
 			name: 'Show only same color nodes and their groups',
-			checkCallback: (checking: boolean) => {
-				const canvasView = this.app.workspace.getActiveViewOfType(ItemView);
-
-				if (canvasView?.getViewType() !== 'canvas') {
-					if (checking) {
-						return false;
-					}
-					return;
-				}
-
-				if (checking) {
-					return true;
-				}
-
-				const canvas = (canvasView as any).canvas;
-				if (!canvas) {
-					return;
-				};
-
-				const canvasData = canvas.getData() as CanvasData;
-
-				if (!canvasData) {
-					return;
-				};
+			checkCallback: this.ifActiveViewIsCanvas((canvas, canvasData) => {
 
 				const selection: any = Array.from(canvas.selection);
 				if (selection.length === 0) {
@@ -143,7 +124,7 @@ export default class CanvasFilterPlugin extends Plugin {
 					.map(x => x.id))
 
 				showOnlyEdges(canvas, shownEdgeIds);
-			}
+			})
 		});
 	}
 
