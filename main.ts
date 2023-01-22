@@ -1,4 +1,4 @@
-import { CanvasData } from 'canvas';
+import { CanvasData, CanvasNodeData } from 'canvas';
 import { App, Editor, ItemView, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
 // Remember to rename these classes and interfaces!
@@ -9,6 +9,17 @@ interface MyPluginSettings {
 
 const DEFAULT_SETTINGS: MyPluginSettings = {
 	mySetting: 'default'
+}
+
+export function nodeBondingBoxContains(outerNode: CanvasNodeData, innerNode: CanvasNodeData) {
+	return outerNode.x <= innerNode.x
+			&& (outerNode.x + outerNode.width) >= (innerNode.x + innerNode.width)
+			&& outerNode.y <= innerNode.y
+			&& (outerNode.y + outerNode.height) >= (innerNode.y + innerNode.height);
+}
+
+export function showOnlyNodes(canvas: any, idsToShow: Set<string>) {
+
 }
 
 export default class MyPlugin extends Plugin {
@@ -45,7 +56,6 @@ export default class MyPlugin extends Plugin {
 					return;
 				};
 
-				const nodes = canvasData.nodes;
 				this.currentView = canvasView;
 
 				const selection: any = Array.from(canvas.selection);
@@ -60,31 +70,36 @@ export default class MyPlugin extends Plugin {
 					new Notice("One of selected nodes has no color, so colorless nodes will be visible");
 				}
 
+				const nodes = canvasData.nodes;
+
 				for (const node of nodes) {
 					canvas.nodes.get(node.id).nodeEl.hide()
 				}
 
-				for (const node of nodes) {
-					if (!colorsToShow.has(node.color ?? "")) {
-						continue;
-					}
-					const currentNode = canvas.nodes.get(node.id);
-					currentNode.nodeEl.show();
-					debugger;
-					const containingNodes = canvas.getContainingNodes(currentNode.bbox);
-					console.log(currentNode.label, containingNodes.map(x => x.label));
-					const containingGroups = containingNodes.filter(n => n.type === 'group');
-												
-					for (const containingGroup of containingGroups) {
-						containingGroup.nodeEl.show();
-					}
+				const fileNodesToShow = 
+					nodes.filter(x => x.type === 'file' 
+									&& colorsToShow.has(x.color ?? ""));
+
+				const groupNodesToShow = 
+					nodes.filter(x => x.type === 'group' 
+					&& fileNodesToShow.some(fn => nodeBondingBoxContains(x, fn)));
+
+				for (const node of [...fileNodesToShow, ...groupNodesToShow]) {
+					const nodeOnCanvas = canvas.nodes.get(node.id);					
+					nodeOnCanvas.nodeEl.show();
 				}
 
-				// Check if node exist
-				//const slideNode = canvas.nodes.get(node.id);
+				const shownNodeIds = new Set([...fileNodesToShow, ...groupNodesToShow].map(x => x.id));
+				const edges = canvasData.edges;
 
-				//canvas.nodes.get(selectedNode.id).nodeEl.hide()
-
+				for (const edge of edges) {
+					const edgeOnCanvas = canvas.edges.get(edge.id);
+					if (shownNodeIds.has(edge.fromNode) && shownNodeIds.has(edge.toNode)) {
+						delete edgeOnCanvas.lineGroupEl.style.display;
+					} else {
+						edgeOnCanvas.lineGroupEl.style.display = "none";
+					}
+				}
 			}
 		});
 	}
