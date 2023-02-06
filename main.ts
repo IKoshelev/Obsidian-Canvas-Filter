@@ -2,14 +2,6 @@ import { AllCanvasNodeData, CanvasData, CanvasEdgeData, CanvasNodeData } from 'c
 import { App, FuzzySuggestModal, getAllTags, ItemView, Notice, Plugin } from 'obsidian';
 
 
-interface CanvasFilterPluginSettings {
-	// mySetting: string;
-}
-
-const DEFAULT_SETTINGS: CanvasFilterPluginSettings = {
-	// mySetting: 'default'
-}
-
 function nodeBondingBoxContains(outerNode: CanvasNodeData, innerNode: CanvasNodeData) {
 	return outerNode.x <= innerNode.x
 		&& (outerNode.x + outerNode.width) >= (innerNode.x + innerNode.width)
@@ -55,8 +47,6 @@ function getEdgesWhereBothNodesInSet(allEdges: CanvasEdgeData[], nodeIds: Set<st
 }
 
 export default class CanvasFilterPlugin extends Plugin {
-
-	settings: CanvasFilterPluginSettings;
 
 	private ifActiveViewIsCanvas = (commandFn: (canvas: any, canvasData: CanvasData) => void) => (checking: boolean) => {
 		const canvasView = this.app.workspace.getActiveViewOfType(ItemView);
@@ -292,18 +282,6 @@ export default class CanvasFilterPlugin extends Plugin {
 					}).open();
 			})
 		});
-	}
-
-	onunload() {
-
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
 	}
 }
 
