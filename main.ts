@@ -27,10 +27,10 @@ function showOnlyEdges(canvas: any, idsToShow?: Set<string>) {
 	for (const edge of edges) {
 		if (idsToShow === undefined || idsToShow.has(edge.id)) {
 			edge.lineGroupEl.style.display = "";
-			edge.markerGroupEl.style.display = "";
+			edge.lineEndGroupEl.style.display = "";
 		} else {
 			edge.lineGroupEl.style.display = "none";
-			edge.markerGroupEl.style.display = "none";
+			edge.lineEndGroupEl.style.display = "none";
 		}
 	}
 }
@@ -197,7 +197,7 @@ export default class CanvasFilterPlugin extends Plugin {
 					const edge = canvas.edges.get(selected.id);
 					if (edge) {
 						edge.lineGroupEl.style.display = "none";
-						edge.markerGroupEl.style.display = "none";
+						edge.lineEndGroupEl.style.display = "none";
 					}
 				}
 
