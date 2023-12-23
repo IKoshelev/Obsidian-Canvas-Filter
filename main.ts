@@ -27,10 +27,10 @@ function showOnlyEdges(canvas: any, idsToShow?: Set<string>) {
 	for (const edge of edges) {
 		if (idsToShow === undefined || idsToShow.has(edge.id)) {
 			edge.lineGroupEl.style.display = "";
-			edge.markerGroupEl.style.display = "";
+			edge.lineEndGroupEl.style.display = "";
 		} else {
 			edge.lineGroupEl.style.display = "none";
-			edge.markerGroupEl.style.display = "none";
+			edge.lineEndGroupEl.style.display = "none";
 		}
 	}
 }
@@ -194,6 +194,40 @@ export default class CanvasFilterPlugin extends Plugin {
 					if (node) {
 						node.nodeEl.hide();
 					}
+					const edge = canvas.edges.get(selected.id);
+					if (edge) {
+						edge.lineGroupEl.style.display = "none";
+						edge.lineEndGroupEl.style.display = "none";
+					}
+				}
+
+				canvas.deselectAll();
+			})
+		});
+
+		this.addCommand({
+			id: 'show-hide-connected',
+			name: 'selected with connections HIDE',
+			checkCallback: this.ifActiveViewIsCanvas((canvas, canvasData) => {
+
+				const selection: any = Array.from(canvas.selection);
+				if (selection.length === 0) {
+					new Notice("Please select at least one node");
+					return;
+				}
+
+				for (const selected of selection) {
+					const node = canvas.nodes.get(selected.id);
+					if (node) {
+						node.nodeEl.hide();
+						const connections = canvasData.edges.filter(x => x.fromNode === node.id || x.toNode === node.id); 
+						for (const connection of connections) {
+							const edge = canvas.edges.get(connection.id);
+							edge.lineGroupEl.style.display = "none";
+							edge.lineEndGroupEl.style.display = "none";
+						}
+					}
+					
 					const edge = canvas.edges.get(selected.id);
 					if (edge) {
 						edge.lineGroupEl.style.display = "none";
