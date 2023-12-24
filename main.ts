@@ -7,7 +7,7 @@ export interface CanvasGroupData {
 }
 
 function isCanvasGroupData(node: any): node is CanvasGroupData {
-	return node.type === 'group';
+	return node?.type === 'group';
 }
 
 function nodeBondingBoxContains(outerNode: CanvasNodeData, innerNode: CanvasNodeData) {
