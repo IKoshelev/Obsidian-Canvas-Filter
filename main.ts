@@ -1,13 +1,13 @@
 import { CanvasData, CanvasEdgeData, CanvasFileData, CanvasLinkData, CanvasNodeData, CanvasTextData } from 'obsidian/canvas';
 import { App, FuzzySuggestModal, getAllTags, ItemView, Notice, Plugin } from 'obsidian';
 
-export interface CanvasGroupData {
+export interface CanvasGroupData extends CanvasNodeData {
 	type: 'group',
 	label: string
 }
 
-function isCanvasGroupData(node: any): node is CanvasGroupData {
-	return node?.type === 'group';
+function isCanvasGroupData(node: CanvasNodeData): node is CanvasGroupData {
+	return (node as any)?.type === 'group';
 }
 
 function nodeBondingBoxContains(outerNode: CanvasNodeData, innerNode: CanvasNodeData) {
