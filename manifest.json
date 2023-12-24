@@ -1,8 +1,8 @@
 {
 	"id": "canvas-filter",
 	"name": "Canvas Filter",
-	"version": "0.9.3",
-	"minAppVersion": "1.1.9",
+	"version": "0.9.4",
+	"minAppVersion": "1.4.0",
 	"description": "This plugin lets you filter Canvas to only show items of specific color, tags or only connected to currently selected node.",
 	"author": "Ivan Koshelev",
 	"authorUrl": "https://ikoshelev.azurewebsites.net/",
